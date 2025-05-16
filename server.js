@@ -1,3 +1,17 @@
+/********************************************************************************
+* WEB422 – Assignment 1
+*
+* I declare that this assignment is my own work in accordance with Seneca's
+* Academic Integrity Policy:
+*
+* https://www.senecapolytechnic.ca/about/policies/academic-integrity-policy.html
+*
+* Name: Pranjal Surjan Student ID: 161709225 Date: May 16, 2025
+*
+* Published URL: https://web-422-a1-wine.vercel.app/
+*
+********************************************************************************/
+
 //Requirements
 require('dotenv').config();
 const express = require("express");
@@ -21,9 +35,9 @@ app.get("/", (req,res)=>{
 app.post("/api/listings", async(req,res)=>{
     try{
         const listing = await db.addNewListing(req.body);
-        res.send(listing);
+         res.status(201).send(listing);
     }catch(err){
-        res.status(404).send({message: err});
+        res.status(400).send({message: err});
     }
 });
 
@@ -32,9 +46,9 @@ app.get("/api/listings", async (req, res)=>{
     try{
 
         const listing = await db.getAllListings(Number(page), Number(perPage), name);
-        res.send(listing);
+         res.status(200).send(listing);
     }catch(err){
-        res.status(404).send({message: err});
+        res.status(400).send({message: err});
     }
 });
 
@@ -43,11 +57,11 @@ app.get("/api/listings/:id", async (req, res) => {
     try {
         const listing = await db.getListingById(req.params.id);
         if (!listing) {
-            return res.status(404).json({ message: "Listing not found" });
+            return res.status(404).send({ message: "Listing not found" });
         }
-        res.send(listing);
+         res.status(200).send(listing);
     } catch (err) {
-        res.status(404).send({message: err});
+        res.status(400).send({message: err});
     }
 });
 
@@ -58,9 +72,9 @@ app.put("/api/listings/:id", async (req, res) => {
         if (result.modifiedCount === 0) {
             return res.status(404).json({ message: "Listing not found or no changes made" });
         }
-        res.send({ message: "Listing updated successfully" });
+        res.status(201).send({ message: "Listing updated successfully" });
     } catch (err) {
-        res.status(500).json({ message: "Failed to update listing", error: err.message });
+        res.status(400).send({ message: "Failed to update listing", error: err.message });
     }
 });
 
@@ -68,11 +82,11 @@ app.delete("/api/listings/:id", async (req, res) => {
     try {
         const result = await db.deleteListingById(req.params.id);
         if (result.deletedCount === 0) {
-            return res.send({ message: "Listing not found" });
+            return  res.status(204).send({ message: "Listing not found" });
         }
-        res.status(204).send(); 
+        res.status(200).send({ message: "Listing deleted successfully" }); 
     } catch (err) {
-        res.status(500).json({ message: "Failed to delete listing", error: err.message });
+        res.status(400).send({ message: "Failed to delete listing", error: err.message });
     }
 });
 
